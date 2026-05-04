@@ -43,13 +43,13 @@ Example:
 Run from this repo folder:
 
 ```powershell
-python .\mdfy.py "D:\zotero-pdfs\Microplasticos" ".\markdown"
+python .\mdfy.py "C:\path\to\pdf-folder" ".\markdown"
 ```
 
 Run from another VS Code window (or any folder):
 
 ```powershell
-python "C:\Users\fabio\OneDrive\Documentos\GitHub\MDfy\MDfy\mdfy.py" "." ".\markdown"
+python "C:\path\to\MDfy\mdfy.py" "." ".\markdown"
 ```
 
 In the second example, `.` means the current folder where you run the command.
