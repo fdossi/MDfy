@@ -1,12 +1,19 @@
+---
+title: MDfy API
+emoji: 📝
+colorFrom: green
+colorTo: blue
+sdk: docker
+app_port: 7860
+license: mit
+---
+
 # MDfy API
 
-Backend Python pronto para um Hugging Face Space gratuito do tipo **Docker**.
+API temporária de conversão de documentos para Markdown, usada pelo frontend MDfy.
 
-## Produção
+- Health check: `GET /health`
+- Conversão: `POST /convert` com campo multipart `file`
+- Limite: 100 MB por arquivo
 
-Space: https://huggingface.co/spaces/fdossi/mdfy-api
-
-1. Defina `ALLOWED_ORIGINS` com o domínio do frontend.
-2. No frontend, defina `NEXT_PUBLIC_MDFY_API_URL` com a URL pública do Space.
-
-Os uploads são temporários e removidos após a resposta. Em um Space gratuito, a primeira conversão depois da hibernação pode demorar.
+Os uploads são removidos automaticamente após a resposta.
