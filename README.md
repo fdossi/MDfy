@@ -1,55 +1,51 @@
 # MDfy
 
-Batch conversion of PDF files to Markdown using Microsoft MarkItDown.
+Aplicação web para converter documentos, planilhas, e-books, imagens e pacotes em Markdown.
 
-## Requirements
+## Aplicação
 
-- Python 3.9+
-- `markitdown` package
+- Frontend responsivo em React/Next (Vinext)
+- Backend Python com FastAPI e Microsoft MarkItDown
+- Upload múltiplo, progresso por arquivo e download imediato
+- Exclusão dos arquivos temporários após cada resposta
+- Proteção contra *path traversal* em ZIP, TAR e TGZ
 
-Install dependency:
+Formatos: PDF, DOCX, DOC, XLSX, XLS, CSV, EPUB, MOBI, PNG, JPG/JPEG, TIFF, DjVu, ZIP, TAR e TGZ.
 
-```powershell
-pip install markitdown
+## Desenvolvimento do frontend
+
+```bash
+npm ci
+npm run dev
 ```
 
-## Script
+Defina `NEXT_PUBLIC_MDFY_API_URL` com a URL do backend, sem barra final.
 
-Main script: `mdfy.py`
+## Desenvolvimento do backend
 
-Usage:
-
-```powershell
-python mdfy.py <input_folder> [output_folder]
+```bash
+cd backend
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn app:app --reload --port 7860
 ```
 
-- `input_folder`: folder with PDF files (search is recursive)
-- `output_folder` (optional): destination for `.md` files
-	- if omitted, output is written under `input_folder`
+O contêiner em `backend/Dockerfile` está preparado para um Hugging Face Space gratuito do tipo Docker.
 
-## Behavior
+## Implantação no Hugging Face
 
-- Skips files already converted (`.md` exists)
-- Detects duplicate PDFs by SHA-256 content hash and ignores duplicates
-- Preserves relative subfolder structure in output to avoid filename collisions
+1. Crie um Space Docker público.
+2. Crie um token do Hugging Face com permissão de escrita.
+3. No GitHub, adicione o secret `HF_TOKEN` e a variável `HF_SPACE_ID` no formato `usuario/nome-do-space`.
+4. Execute o workflow **Sync backend to Hugging Face**.
 
-Example:
+Não publique o token em arquivos, commits ou issues.
 
-- `input/a/report.pdf` -> `output/a/report.md`
-- `input/b/report.pdf` -> `output/b/report.md`
+## Privacidade
 
-## Examples (Windows / PowerShell)
+O backend remove os diretórios temporários após entregar a resposta. Em produção, configure `ALLOWED_ORIGINS` com o domínio exato do frontend.
 
-Run from this repo folder:
+## Licença
 
-```powershell
-python .\mdfy.py "C:\path\to\pdf-folder" ".\markdown"
-```
-
-Run from another VS Code window (or any folder):
-
-```powershell
-python "C:\path\to\MDfy\mdfy.py" "." ".\markdown"
-```
-
-In the second example, `.` means the current folder where you run the command.
+MIT.
