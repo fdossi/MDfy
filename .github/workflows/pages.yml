@@ -1,3 +1,4 @@
+# GitHub Pages enabled in repository settings
 name: Publish MDfy to GitHub Pages
 
 on:
