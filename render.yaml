@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: mdfy-api
+    runtime: docker
+    plan: free
+    branch: main
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    healthCheckPath: /health
+    autoDeployTrigger: commit
+    envVars:
+      - key: ALLOWED_ORIGINS
+        value: https://mdfy-conversor.doss777.chatgpt.site

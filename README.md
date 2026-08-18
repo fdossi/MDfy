@@ -31,16 +31,14 @@ pip install -r requirements.txt
 uvicorn app:app --reload --port 7860
 ```
 
-O contêiner em `backend/Dockerfile` está preparado para um Hugging Face Space gratuito do tipo Docker.
+O contêiner em `backend/Dockerfile` está preparado para um Web Service gratuito no Render.
 
-## Implantação no Hugging Face
+## Implantação no Render
 
-1. Crie um Space Docker público.
-2. Crie um token do Hugging Face com permissão de escrita.
-3. No GitHub, adicione o secret `HF_TOKEN` e a variável `HF_SPACE_ID` no formato `usuario/nome-do-space`.
-4. Execute o workflow **Sync backend to Hugging Face**.
-
-Não publique o token em arquivos, commits ou issues.
+1. No Render, selecione **New → Blueprint**.
+2. Conecte o repositório `fdossi/MDfy`.
+3. O arquivo `render.yaml` criará o serviço Docker gratuito `mdfy-api`.
+4. Aguarde o health check `/health` ficar disponível.
 
 ## Privacidade
 
