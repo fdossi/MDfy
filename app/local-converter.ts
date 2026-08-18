@@ -3,6 +3,18 @@ export const LOCAL_FORMATS = new Set(["pdf", "docx", "xlsx", "csv", "epub"]);
 const clean = (value: string) => value.replace(/\r\n/g, "\n").replace(/\n{3,}/g, "\n\n").trim();
 const escapeCell = (value: unknown) => String(value ?? "").replace(/\|/g, "\\|").replace(/\r?\n/g, "<br>");
 
+function htmlToMarkdown(html: string) {
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  doc.querySelectorAll("a").forEach(node => node.replaceWith(`[${node.textContent ?? ""}](${node.getAttribute("href") ?? ""})`));
+  doc.querySelectorAll("strong,b").forEach(node => node.replaceWith(`**${node.textContent ?? ""}**`));
+  doc.querySelectorAll("em,i").forEach(node => node.replaceWith(`*${node.textContent ?? ""}*`));
+  doc.querySelectorAll("h1,h2,h3,h4,h5,h6").forEach(node => node.replaceWith(`${"#".repeat(Number(node.tagName.slice(1)))} ${node.textContent ?? ""}\n\n`));
+  doc.querySelectorAll("li").forEach(node => node.replaceWith(`- ${node.textContent ?? ""}\n`));
+  doc.querySelectorAll("p,blockquote,tr").forEach(node => node.append("\n\n"));
+  doc.querySelectorAll("br").forEach(node => node.replaceWith("\n"));
+  return clean(doc.body.textContent ?? "");
+}
+
 function tableToMarkdown(rows: unknown[][]) {
   if (!rows.length) return "";
   const width = Math.max(...rows.map(row => row.length), 1);
@@ -97,7 +109,7 @@ export async function convertLocally(file: File) {
   const extension = file.name.toLowerCase().split(".").pop() ?? "";
   let markdown = "";
   if (extension === "pdf") markdown = await pdfToMarkdown(file);
-  else if (extension === "docx") { const mammoth = await import("mammoth"); markdown = (await mammoth.convertToMarkdown({arrayBuffer: await file.arrayBuffer()})).value; }
+  else if (extension === "docx") { const mammoth = await import("mammoth"); markdown = htmlToMarkdown((await mammoth.convertToHtml({arrayBuffer: await file.arrayBuffer()})).value); }
   else if (extension === "xlsx") markdown = await workbookToMarkdown(file);
   else if (extension === "csv") markdown = tableToMarkdown(parseCsv(await file.text()));
   else if (extension === "epub") markdown = await epubToMarkdown(file);
